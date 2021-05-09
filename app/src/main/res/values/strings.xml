@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Covid Vaccine Tracker</string>
+    <string name="pincode">Pincode</string>
+    <string name="track">Track</string>
+    <string name="checking">Checking…</string>
+    <string name="trackers">Trackers</string>
+    <string name="pause">Pause</string>
+    <string name="start">Start</string>
+    <string name="show_details">Show Details</string>
+    <string name="min_age_18_plus">Age 18+</string>
+    <string name="min_age_45_plus">Age 45+</string>
+    <string name="min_age">Min Age</string>
+    <string name="vaccine_image">Vaccine Image</string>
+    <string name="covid_image">Covid Image</string>
+    <string name="sample_text">Sample Text</string>
+    <string name="view_as">View as:</string>
+</resources>

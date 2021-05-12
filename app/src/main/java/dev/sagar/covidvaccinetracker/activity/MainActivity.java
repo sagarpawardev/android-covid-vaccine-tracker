@@ -45,6 +45,7 @@ import retrofit2.Response;
 import static android.graphics.Color.TRANSPARENT;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static dev.sagar.covidvaccinetracker.Constants.ALARM_PROCESS_ID;
 import static dev.sagar.covidvaccinetracker.Constants.COWIN_PORTAL;
 import static dev.sagar.covidvaccinetracker.enums.FilterEnum.MIN_AGE;
 
@@ -118,11 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startAlarm() {
-        this.jobFacade.schedule(123456);
-    }
-
-    public void cancelAlarm() {
-        this.jobFacade.cancel(123456);
+        this.jobFacade.schedule(ALARM_PROCESS_ID);
     }
 
     public Callback<CalendarByPin> pincodeCallback(Map<FilterEnum, String> filters) {

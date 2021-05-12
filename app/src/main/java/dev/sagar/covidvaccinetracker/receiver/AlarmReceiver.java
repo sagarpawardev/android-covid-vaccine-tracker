@@ -8,9 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.widget.Toast;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import dev.sagar.covidvaccinetracker.R;
 import dev.sagar.covidvaccinetracker.facade.CowinFacade;
@@ -56,7 +55,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 }
 
                 // Log Success
-                String log = String.format("Check success for %s at %s found availability: %s", tracker.getPincode(), LocalDate.now(), count);
+                String log = String.format("Check success for %s at %s found availability: %s", tracker.getPincode(), LocalDateTime.now(), count);
                 loggerFacade.log(log);
             }
 
@@ -64,7 +63,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             @EverythingIsNonNull
             public void onFailure(Call<CalendarByPin> call, Throwable t) {
                 // Log Fail
-                String log = String.format("Check failed for %s at %s", tracker.getPincode(), LocalDate.now());
+                String log = String.format("Check failed for %s at %s", tracker.getPincode(), LocalDateTime.now());
                 loggerFacade.log(log);
             }
         };

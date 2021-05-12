@@ -8,8 +8,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
-import dev.sagar.covidvaccinetracker.model.Tracker;
-
 public class LoggerFacade {
 
     private final static String PREF_KEY = "database";
@@ -24,6 +22,8 @@ public class LoggerFacade {
     public void log(String log){
         List<String> logs = getLogs();
         logs.add(0, log);
+        int trimSize = Math.min(24*12, logs.size());
+        logs = logs.subList(0, trimSize );
         saveLogs(logs);
     }
 

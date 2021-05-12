@@ -8,9 +8,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
+
+import java.time.LocalDate;
 
 import dev.sagar.covidvaccinetracker.R;
 import dev.sagar.covidvaccinetracker.facade.CowinFacade;
+import dev.sagar.covidvaccinetracker.facade.LoggerFacade;
 import dev.sagar.covidvaccinetracker.facade.StorageFacade;
 import dev.sagar.covidvaccinetracker.model.CalendarByPin;
 import dev.sagar.covidvaccinetracker.model.Tracker;
@@ -25,10 +29,12 @@ import static java.lang.String.format;
 
 public class AlarmReceiver extends BroadcastReceiver {
     private CowinFacade cowinFacade;
+    private LoggerFacade loggerFacade;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         cowinFacade = new CowinFacade(context);
+        loggerFacade = new LoggerFacade(context);
         StorageFacade storageFacade = new StorageFacade(context);
 
         storageFacade.getTrackers().stream()
@@ -44,16 +50,22 @@ public class AlarmReceiver extends BroadcastReceiver {
             public void onResponse(Call<CalendarByPin> call, Response<CalendarByPin> response) {
                 CalendarByPin calendarByPin = response.body();
                 long count = cowinFacade.findAvailableCenters(calendarByPin, tracker.getFilters());
-
+                //Toast.makeText(context, "Called API for "+tracker.getPincode(), Toast.LENGTH_LONG).show(); //This is only for testing
                 if (count > 0) {
                     addNotification(context, tracker, count);
                 }
+
+                // Log Success
+                String log = String.format("Check success for %s at %s found availability: %s", tracker.getPincode(), LocalDate.now(), count);
+                loggerFacade.log(log);
             }
 
             @Override
             @EverythingIsNonNull
             public void onFailure(Call<CalendarByPin> call, Throwable t) {
-
+                // Log Fail
+                String log = String.format("Check failed for %s at %s", tracker.getPincode(), LocalDate.now());
+                loggerFacade.log(log);
             }
         };
     }

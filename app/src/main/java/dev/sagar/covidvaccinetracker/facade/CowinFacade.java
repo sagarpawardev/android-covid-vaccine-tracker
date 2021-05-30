@@ -4,9 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,7 +21,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 import static dev.sagar.covidvaccinetracker.Constants.localDateFormatter;
+import static dev.sagar.covidvaccinetracker.enums.DoseEnum.DOSE1;
+import static dev.sagar.covidvaccinetracker.enums.DoseEnum.DOSE2;
+import static dev.sagar.covidvaccinetracker.enums.FilterEnum.DOSE;
 import static dev.sagar.covidvaccinetracker.enums.FilterEnum.MIN_AGE;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.math.NumberUtils.toInt;
 
@@ -44,6 +48,17 @@ public class CowinFacade {
         return calendarByPin.getCenters().stream()
                 .filter(result -> result.getSessions().stream()
                         .filter(session -> session.getMinAgeLimit()<= toInt(filters.get(MIN_AGE), 100))
+                        .filter(session -> {
+                            String dose = filters.get(DOSE);
+                            if( equalsIgnoreCase(dose, DOSE1.toString()) ) {
+                                return session.getAvailableCapacityDoes1() > 0;
+                            }
+                            else if( equalsIgnoreCase(dose, DOSE2.toString()) ){
+                                return session.getAvailableCapacityDoes2() > 0;
+                            }
+
+                            return true;
+                        })
                         .anyMatch(session -> session.getAvailableCapacity() > 0)
                 ).count();
     }

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,14 +23,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dev.sagar.covidvaccinetracker.Constants;
 import dev.sagar.covidvaccinetracker.R;
+import dev.sagar.covidvaccinetracker.enums.DoseEnum;
 import dev.sagar.covidvaccinetracker.enums.FilterEnum;
 import dev.sagar.covidvaccinetracker.facade.CowinFacade;
 import dev.sagar.covidvaccinetracker.facade.JobSchedulerFacade;
@@ -47,7 +50,12 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static dev.sagar.covidvaccinetracker.Constants.ALARM_PROCESS_ID;
 import static dev.sagar.covidvaccinetracker.Constants.COWIN_PORTAL;
+import static dev.sagar.covidvaccinetracker.enums.DoseEnum.DOSE1;
+import static dev.sagar.covidvaccinetracker.enums.FilterEnum.DOSE;
 import static dev.sagar.covidvaccinetracker.enums.FilterEnum.MIN_AGE;
+import static net.cachapa.expandablelayout.ExpandableLayout.State.COLLAPSED;
+import static net.cachapa.expandablelayout.ExpandableLayout.State.EXPANDED;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
     private JobSchedulerFacade jobFacade;
     private TrackerFacade trackerFacade;
     private Button btnTrack;
+    private ExpandableLayout elAdvancedOptions;
+    private Spinner spDose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +76,11 @@ public class MainActivity extends AppCompatActivity {
         trackerFacade = new TrackerFacade(this);
         final RadioGroup rgMinAge = findViewById(R.id.rgMinAge);
         final EditText etPincode = findViewById(R.id.etPincode);
+        final TextView tvAdvancedOptions = findViewById(R.id.txtAdvancedOptions);
         btnTrack = findViewById(R.id.btnTrack);
+        elAdvancedOptions = findViewById(R.id.elAdvancedOptions);
+        elAdvancedOptions.collapse(true);
+        spDose = findViewById(R.id.spDose);
 
         btnTrack.setOnClickListener(view -> {
             String pincode = etPincode.getText().toString();
@@ -75,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
             Map<FilterEnum, String> filters = new HashMap<>();
             int minAge = rgMinAge.getCheckedRadioButtonId()==R.id.rb18Plus ? 18: 45;
             filters.put(MIN_AGE, String.valueOf(minAge));
+            DoseEnum dose = getSelectedDoseNumber();
+            filters.put(DOSE, String.valueOf(dose));
 
             cowinFacade.getCalendarByPin(pincode, pincodeCallback(filters));
             btnTrack.setText(R.string.checking);
@@ -93,6 +109,24 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        tvAdvancedOptions.setOnClickListener( (view) -> {
+            if(elAdvancedOptions.isExpanded()) {
+                elAdvancedOptions.collapse(true);
+            }
+            else {
+                elAdvancedOptions.expand(true);
+            }
+        });
+
+        elAdvancedOptions.setOnExpansionUpdateListener((expansionFraction, state) -> {
+            if(state == COLLAPSED){
+                tvAdvancedOptions.setText(R.string.advanced_options_plus);
+            }
+            else if(state == EXPANDED){
+                tvAdvancedOptions.setText(R.string.advanced_options_minus);
             }
         });
 
@@ -166,11 +200,11 @@ public class MainActivity extends AppCompatActivity {
         TextView tvDistrict = viewTrackerItem.findViewById(R.id.tvDistrict);
         TextView tvPincode = viewTrackerItem.findViewById(R.id.tvPincode);
         TextView tvState = viewTrackerItem.findViewById(R.id.tvTrackerState);
-        TextView tvMinAge = viewTrackerItem.findViewById(R.id.tvMinAge);
+        TextView tvFilters = viewTrackerItem.findViewById(R.id.tvMinAge);
         tvDistrict.setText(tracker.getLocation());
         tvPincode.setText(tracker.getPincode());
         tvState.setText(WordUtils.capitalize(tracker.getState().toString().toLowerCase()));
-        tvMinAge.setText( String.format("Age %s+", tracker.getFilters().getOrDefault(MIN_AGE, "45")) );
+        tvFilters.setText( getFilterText(tracker.getFilters()) );
 
         viewTrackerItem.setOnClickListener(view -> showTrackerOptions(tracker));
 
@@ -237,6 +271,54 @@ public class MainActivity extends AppCompatActivity {
         // Show existing trackers
         List<Tracker> trackers = trackerFacade.getAllTrackers();
         trackers.forEach(this::addTracker);
+    }
+
+    private String getFilterText(Map<FilterEnum, String> filters){
+        StringBuilder builder = new StringBuilder();
+        String txtAge = String.format("Age %s+", filters.getOrDefault(MIN_AGE, "45"));
+        builder.append(txtAge);
+        if(filters.containsKey(DOSE)) {
+            builder.append(", ");
+            DoseEnum dose = DoseEnum.valueOf(filters.get(DOSE));
+            String txtDose = resolveDoseNumber(dose);
+            builder.append(txtDose);
+        }
+
+        return builder.toString();
+    }
+
+    private String resolveDoseNumber(DoseEnum dose){
+        switch (dose) {
+            case DOSE1:
+                return getResources().getStringArray(R.array.dose_opts)[1];
+            case DOSE2:
+                return getResources().getStringArray(R.array.dose_opts)[2];
+            case ANY:
+                return getResources().getStringArray(R.array.dose_opts)[0];
+        }
+
+        return EMPTY;
+    }
+
+    private DoseEnum getSelectedDoseNumber(){
+
+        // Find value by value
+        String selectedText = spDose.getSelectedItem().toString();
+        switch(selectedText){
+            case "dose 1": return DOSE1;
+            case "dose 2": return DoseEnum.DOSE2;
+            case "any": return DoseEnum.ANY;
+        }
+
+        // Try by position
+        int position = spDose.getSelectedItemPosition();
+        switch(position){
+            case 0: return DoseEnum.ANY;
+            case 1: return DOSE1;
+            case 2: return DoseEnum.DOSE2;
+        }
+
+        return null;
     }
 
     public void check(View view){

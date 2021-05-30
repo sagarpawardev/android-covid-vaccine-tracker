@@ -31,28 +31,83 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <RadioGroup
-            android:id="@+id/rgMinAge"
+        <TextView
+            android:id="@+id/txtAdvancedOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:labelFor="@id/elAdvancedOptions"
             app:layout_constraintTop_toBottomOf="@id/etPincode"
-            app:layout_constraintStart_toStartOf="parent">
-            <RadioButton
-                android:id="@+id/rb18Plus"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/min_age_18_plus" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:paddingStart="5dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingEnd="5dp"
+            android:textColor="@color/teal_700"
+            android:textSize="16sp"
+            android:text="@string/advanced_options_plus" />
 
-            <RadioButton
-                android:id="@+id/rb45Plus"
-                android:layout_width="0dp"
+        <net.cachapa.expandablelayout.ExpandableLayout
+            android:id="@+id/elAdvancedOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/txtAdvancedOptions"
+            app:layout_constraintStart_toStartOf="parent"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            app:el_expanded="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/min_age_45_plus" />
-        </RadioGroup>
+                android:paddingStart="8dp"
+                android:paddingEnd="2dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/age_group"
+                    android:labelFor="@id/rgMinAge"/>
+                <RadioGroup
+                    android:id="@+id/rgMinAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="5dp">
+                    <RadioButton
+                        android:id="@+id/rb18Plus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/min_age_18_plus" />
+
+                    <RadioButton
+                        android:id="@+id/rb45Plus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/min_age_45_plus" />
+                </RadioGroup>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@id/spDose"
+                    android:text="@string/dose_number"/>
+                <Spinner
+                    android:id="@+id/spDose"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:entries="@array/dose_opts">
+                </Spinner>
+            </LinearLayout>
+
+
+        </net.cachapa.expandablelayout.ExpandableLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -62,7 +117,7 @@
             android:enabled="false"
             android:layout_marginTop="5dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rgMinAge" />
+            app:layout_constraintTop_toBottomOf="@+id/elAdvancedOptions" />
 
         <TextView
             android:layout_width="wrap_content"

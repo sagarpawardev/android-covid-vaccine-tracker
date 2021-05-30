@@ -7,12 +7,22 @@
     <string name="pause">Pause</string>
     <string name="start">Start</string>
     <string name="show_details">Show Details</string>
-    <string name="min_age_18_plus">Age 18+</string>
-    <string name="min_age_45_plus">Age 45+</string>
+    <string name="min_age_18_plus">18–45</string>
+    <string name="min_age_45_plus">45+</string>
     <string name="min_age">Min Age</string>
     <string name="vaccine_image">Vaccine Image</string>
     <string name="covid_image">Covid Image</string>
     <string name="sample_text">Sample Text</string>
     <string name="view_as">View as:</string>
     <string name="logs">Logs</string>
+    <string name="age_group">Age Group</string>
+    <string name="dose_number">Dose Number</string>
+    <string name="advanced_options_plus">Advanced Options +</string>
+    <string name="advanced_options_minus">Advanced Options -</string>
+
+    <string-array name="dose_opts">
+        <item>Any</item>
+        <item>Dose 1</item>
+        <item>Dose 2</item>
+    </string-array>
 </resources>

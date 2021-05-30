@@ -19,9 +19,17 @@ public class VaccineSession {
     @JsonProperty("available_capacity")
     private int availableCapacity;
 
+    @JsonProperty("available_capacity_dose1")
+    private int availableCapacityDoes1;
+
+    @JsonProperty("available_capacity_dose2")
+    private int availableCapacityDoes2;
+
     @JsonProperty("min_age_limit")
     private int minAgeLimit;
+
     private String vaccine;
+
     private List<String> slots;
 
     public UUID getSessionId() {
@@ -46,6 +54,22 @@ public class VaccineSession {
 
     public void setAvailableCapacity(int availableCapacity) {
         this.availableCapacity = availableCapacity;
+    }
+
+    public int getAvailableCapacityDoes1() {
+        return availableCapacityDoes1;
+    }
+
+    public void setAvailableCapacityDoes1(int availableCapacityDoes1) {
+        this.availableCapacityDoes1 = availableCapacityDoes1;
+    }
+
+    public int getAvailableCapacityDoes2() {
+        return availableCapacityDoes2;
+    }
+
+    public void setAvailableCapacityDoes2(int availableCapacityDoes2) {
+        this.availableCapacityDoes2 = availableCapacityDoes2;
     }
 
     public int getMinAgeLimit() {

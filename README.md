@@ -13,6 +13,9 @@ Cowin vaccine tracker uses Cowin API to track available slots in next 7 days
 2. Import in android studio
 3. Once build is successful, click "Run" icon
 
+# Demo
+https://user-images.githubusercontent.com/18640791/138944024-2cb4aafc-5b66-4373-810b-e23465ca46ba.mp4
+
 # Screenshots
 
 <img src="screenshots/1.png" width="324"> <img src="screenshots/2.png" width="324"> <br>
